@@ -25,6 +25,10 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <include
+            layout="@layout/layout_loader"
+            app:vm="@{vm.loaderHelper.loaderViewModel}" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

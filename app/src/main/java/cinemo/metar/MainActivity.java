@@ -11,15 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import cinemo.metar.databinding.ActivityMainBinding;
-import cinemo.metar.interfaces.LoaderListener;
-import cinemo.metar.loader.LoaderHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBinding;
     private MainViewModel mViewModel;
-
-    private LoaderHelper mLoaderHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +23,6 @@ public class MainActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mBinding.setVm(mViewModel);
-
-        mLoaderHelper = new LoaderHelper(new LoaderListener() {
-            @Override
-            public void onRetryClick() {
-
-            }
-        });
-
-        loadData();
     }
 
 
@@ -65,18 +52,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
-    }
-
-
-    private void loadData() {
-        //todo - internet check
-
-        mLoaderHelper.showLoading();
-
-        //todo - check with local data
-
-        //todo - network call
-
-        mLoaderHelper.dismiss();
     }
 }

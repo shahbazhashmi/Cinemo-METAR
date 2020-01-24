@@ -1,5 +1,7 @@
 package cinemo.metar.loader;
 
+import cinemo.metar.AppController;
+import cinemo.metar.R;
 import cinemo.metar.interfaces.LoaderListener;
 
 /**
@@ -11,7 +13,7 @@ public class LoaderHelper {
         LOADING, ERROR, TRY_AGAIN
     }
 
-    LoaderViewModel loaderViewModel;
+    public LoaderViewModel loaderViewModel;
 
     public LoaderHelper(LoaderListener loaderListener) {
         loaderViewModel = new LoaderViewModel(loaderListener);
