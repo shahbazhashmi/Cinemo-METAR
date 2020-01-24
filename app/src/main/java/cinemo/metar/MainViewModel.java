@@ -1,26 +1,25 @@
 package cinemo.metar;
 
-import android.app.Application;
 import android.os.Handler;
 
-import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.ViewModel;
 
 import cinemo.metar.interfaces.LoaderListener;
 import cinemo.metar.loader.LoaderHelper;
+import cinemo.metar.utils.AppUtils;
 
 /**
  * Created by Shahbaz Hashmi on 2020-01-23.
  */
-public class MainViewModel extends AndroidViewModel {
+public class MainViewModel extends ViewModel {
 
     public LoaderHelper loaderHelper;
 
-    public MainViewModel(Application application) {
-        super(application);
+    public MainViewModel() {
         loaderHelper = new LoaderHelper(new LoaderListener() {
             @Override
             public void onRetryClick() {
-
+                loadData();
             }
         });
 
@@ -28,7 +27,10 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     private void loadData() {
-        //todo - internet check
+        if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
+            loaderHelper.showErrorWithRetry(AppController.getResourses().getString(R.string.txt_internet_error));
+            return;
+        }
 
         loaderHelper.showLoading();
 
@@ -44,5 +46,7 @@ public class MainViewModel extends AndroidViewModel {
         }, 2000);
 
     }
+
+    private void test() {}
 
 }
