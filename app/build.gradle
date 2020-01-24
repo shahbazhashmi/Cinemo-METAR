@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "METAR_OBSERVATIONS_BASE_URL", '"https://tgftp.nws.noaa.gov/data/observations/metar/"'
+
     }
     buildTypes {
         release {
@@ -18,6 +20,13 @@ android {
     }
     dataBinding {
         enabled true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
+        flavorDimensions "default"
     }
 }
 
