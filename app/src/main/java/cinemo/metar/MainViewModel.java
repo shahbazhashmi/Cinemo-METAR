@@ -1,9 +1,9 @@
 package cinemo.metar;
 
-import android.os.Handler;
+import android.app.Application;
 import android.util.Log;
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.AndroidViewModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,27 +13,26 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cinemo.metar.interfaces.LoaderListener;
 import cinemo.metar.loader.LoaderHelper;
+import cinemo.metar.room.StationViewModel;
 import cinemo.metar.utils.AppUtils;
 import cinemo.metar.utils.executors.DefaultExecutorSupplier;
 
 /**
  * Created by Shahbaz Hashmi on 2020-01-23.
  */
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = "MainViewModel";
 
     public LoaderHelper loaderHelper;
 
-    public MainViewModel() {
-        loaderHelper = new LoaderHelper(new LoaderListener() {
-            @Override
-            public void onRetryClick() {
-                loadData();
-            }
-        });
+    private StationViewModel mStationViewModel;
+
+    public MainViewModel(Application application) {
+        super(application);
+        loaderHelper = new LoaderHelper(this::loadData);
+        mStationViewModel = new StationViewModel(application);
 
         loadData();
     }
@@ -53,7 +52,9 @@ public class MainViewModel extends ViewModel {
             BufferedReader reader = null;
 
             try {
-                URL url = new URL(Config.METAR_DECODED_URL);
+                String urlStr = Config.METAR_DECODED_URL;
+                Log.d(TAG, "calling - "+urlStr);
+                URL url = new URL(urlStr);
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -74,6 +75,8 @@ public class MainViewModel extends ViewModel {
                     Log.d(TAG, line);
                     responseStringBuilder.append("\n");
                 }
+
+
 
                 // Parse responseStringBuilder.toString() (probably as HTML) here:
 
