@@ -24,6 +24,10 @@ public class StationViewModel extends AndroidViewModel {
         return mStationRepository.getAllStations();
     }
 
+    public void InsertUpdatedStation(Station station) {
+        mStationRepository.InsertUpdated(station);
+    }
+
     public void insertStation(Station station) {
         mStationRepository.insert(station);
     }

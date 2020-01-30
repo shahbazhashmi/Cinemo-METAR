@@ -27,4 +27,17 @@ public interface StationDao {
     @Update
     void updateStation(Station station);
 
+    @Query("SELECT * FROM station WHERE file_name = :fileName")
+    Station getStationByFileName(String fileName);
+
+    /**
+     * used to identify existing station
+     * @param fileName
+     * @param dateTime
+     * @param size
+     * @return
+     */
+    @Query("SELECT * FROM station WHERE file_name = :fileName AND date_modified = :dateTime AND size = :size")
+    Station getStationByData(String fileName, String dateTime, Long size);
+
 }

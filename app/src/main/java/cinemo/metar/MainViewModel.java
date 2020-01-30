@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import cinemo.metar.loader.LoaderHelper;
 import cinemo.metar.room.Station;
@@ -90,7 +91,7 @@ public class MainViewModel extends AndroidViewModel {
                         Log.d(TAG, "date_time -> "+dateTime);
                         Log.d(TAG, "size -> "+size);
 
-                        mStationViewModel.insertStation(new Station(fileName, dateTime, Long.parseLong(size)));
+                        mStationViewModel.InsertUpdatedStation(new Station(fileName, dateTime, Long.parseLong(size)));
                     }
                 }
 
@@ -115,9 +116,4 @@ public class MainViewModel extends AndroidViewModel {
         });
 
     }
-
-    private void test() {
-
-    }
-
 }

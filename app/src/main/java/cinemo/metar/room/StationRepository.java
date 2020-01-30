@@ -2,6 +2,7 @@ package cinemo.metar.room;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -11,6 +12,8 @@ import java.util.List;
  * Created by Shahbaz Hashmi on 2020-01-29.
  */
 public class StationRepository {
+
+    public static final String TAG = "StationRepository";
 
     private Application mApplication;
 
@@ -31,6 +34,10 @@ public class StationRepository {
         new InsertStationAsyncTask().execute(station);
     }
 
+    public void InsertUpdated(Station station) {
+        new InsertUpdatedStationAsyncTask().execute(station);
+    }
+
     public void update(Station station) {
         new UpdateStationAsyncTask().execute(station);
     }
@@ -43,6 +50,19 @@ public class StationRepository {
         new DeleteAllStationSAsyncTask().execute();
     }
 
+
+    private class InsertUpdatedStationAsyncTask extends AsyncTask<Station, Void, Void> {
+        @Override
+        protected Void doInBackground(Station... stations) {
+            Station station = stations[0];
+            if(mStationDao.getStationByData(station.getFileName(), station.getDateModified(), station.getSize()) == null) {
+                mStationDao.insertStation(stations[0]);
+            } else {
+                Log.d(TAG, "identical record found -> "+station.getFileName());
+            }
+            return null;
+        }
+    }
 
     private class InsertStationAsyncTask extends AsyncTask<Station, Void, Void> {
         @Override
