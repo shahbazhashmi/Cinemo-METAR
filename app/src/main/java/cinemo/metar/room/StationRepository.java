@@ -70,7 +70,9 @@ public class StationRepository {
 
                 if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
                     if(isListDataExist()) {
-                        fetchDataListener.onSuccess(getAllStations().getValue());
+                        DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                            fetchDataListener.onSuccess(getAllStations());
+                        });
                     } else {
                         fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
                     }
@@ -109,14 +111,17 @@ public class StationRepository {
                         InsertUpdated(new Station(fileName, dateTime, Long.parseLong(size)));
                     }
                 }
-
-                fetchDataListener.onSuccess(getAllStations().getValue());
+                DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                    fetchDataListener.onSuccess(getAllStations());
+                });
 
 
             } catch (Exception e) {
                 e.printStackTrace();
                 if(isListDataExist()) {
-                    fetchDataListener.onSuccess(getAllStations().getValue());
+                    DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                        fetchDataListener.onSuccess(getAllStations());
+                    });
                 } else {
                     fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
                 }

@@ -1,5 +1,7 @@
 package cinemo.metar.interfaces;
 
+import androidx.lifecycle.LiveData;
+
 import java.util.List;
 
 import cinemo.metar.room.Station;
@@ -9,7 +11,7 @@ import cinemo.metar.room.Station;
  */
 public interface FetchListDataListener {
 
-    void onSuccess(List<Station> stationList);
+    void onSuccess(LiveData<List<Station>> stationList);
 
     void onError(String errMsg, boolean canRetry);
 

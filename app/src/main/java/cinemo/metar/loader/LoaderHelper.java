@@ -15,7 +15,7 @@ public class LoaderHelper {
 
     public LoaderViewModel loaderViewModel;
 
-    public LoaderHelper(LoaderListener loaderListener) {
+    public void setRetryListener(LoaderListener loaderListener) {
         loaderViewModel = new LoaderViewModel(loaderListener);
     }
 
