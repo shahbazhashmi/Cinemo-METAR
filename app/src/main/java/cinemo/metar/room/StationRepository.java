@@ -1,12 +1,13 @@
 package cinemo.metar.room;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+
+import cinemo.metar.utils.executors.DefaultExecutorSupplier;
 
 /**
  * Created by Shahbaz Hashmi on 2020-01-29.
@@ -31,15 +32,25 @@ public class StationRepository {
     }
 
     public void insert(Station station) {
-        new InsertStationAsyncTask().execute(station);
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            mStationDao.insertStation(station);
+        });
     }
 
     public void InsertUpdated(Station station) {
-        new InsertUpdatedStationAsyncTask().execute(station);
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            if(mStationDao.getStationByData(station.getFileName(), station.getDateModified(), station.getSize()) == null) {
+                mStationDao.insertStation(station);
+            } else {
+                Log.d(TAG, "identical record found -> "+station.getFileName());
+            }
+        });
     }
 
     public void update(Station station) {
-        new UpdateStationAsyncTask().execute(station);
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            mStationDao.updateStation(station);
+        });
     }
 
     public LiveData<List<Station>> getAllStations() {
@@ -47,45 +58,9 @@ public class StationRepository {
     }
 
     public void deleteAll() {
-        new DeleteAllStationSAsyncTask().execute();
-    }
-
-
-    private class InsertUpdatedStationAsyncTask extends AsyncTask<Station, Void, Void> {
-        @Override
-        protected Void doInBackground(Station... stations) {
-            Station station = stations[0];
-            if(mStationDao.getStationByData(station.getFileName(), station.getDateModified(), station.getSize()) == null) {
-                mStationDao.insertStation(stations[0]);
-            } else {
-                Log.d(TAG, "identical record found -> "+station.getFileName());
-            }
-            return null;
-        }
-    }
-
-    private class InsertStationAsyncTask extends AsyncTask<Station, Void, Void> {
-        @Override
-        protected Void doInBackground(Station... stations) {
-            mStationDao.insertStation(stations[0]);
-            return null;
-        }
-    }
-
-    private class UpdateStationAsyncTask extends AsyncTask<Station, Void, Void> {
-        @Override
-        protected Void doInBackground(Station... stations) {
-            mStationDao.updateStation(stations[0]);
-            return null;
-        }
-    }
-
-    private class DeleteAllStationSAsyncTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            mStationDao.deleteAllNotes();
-            return null;
-        }
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            mStationDao.deleteAllStations();
+        });
     }
 
 }

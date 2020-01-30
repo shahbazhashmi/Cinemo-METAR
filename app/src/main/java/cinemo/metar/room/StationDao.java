@@ -19,7 +19,7 @@ public interface StationDao {
     LiveData<List<Station>> getAllStations();
 
     @Query("DELETE FROM station")
-    void deleteAllNotes();
+    void deleteAllStations();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertStation(Station station);
