@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import cinemo.metar.loader.LoaderHelper;
+import cinemo.metar.room.Station;
 import cinemo.metar.room.StationViewModel;
 import cinemo.metar.utils.AppUtils;
+import cinemo.metar.utils.StringUtils;
 import cinemo.metar.utils.executors.DefaultExecutorSupplier;
 
 /**
@@ -62,31 +63,41 @@ public class MainViewModel extends AndroidViewModel {
 
                 int responseCode = connection.getResponseCode();
 
+                if(responseCode != HttpURLConnection.HTTP_OK) {
+                    throw new Exception("failed to load page - code "+responseCode);
+                }
+
                 InputStream stream = connection.getInputStream();
 
                 reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuilder responseStringBuilder = new StringBuilder();
 
                 String line = "";
 
+                /**
+                 * parsing HTML to insert in station table
+                 */
                 while ((line = reader.readLine()) != null) {
+                    if(line.startsWith("<tr><td>") && line.endsWith("</td></tr>")) {
+                        String[] tdArr = line.split("</td>");
 
-                    responseStringBuilder.append(line);
-                    Log.d(TAG, line);
-                    responseStringBuilder.append("\n");
+                        String fileName = StringUtils.getAnchorTagText(tdArr[0]);
+                        if(!(fileName.contains(".TXT") || fileName.contains(".txt"))) {
+                            continue;
+                        }
+                        String dateTime = StringUtils.removeHtmlTags(tdArr[1]);
+                        String size = StringUtils.removeHtmlTags(tdArr[2]);
+                        Log.d(TAG, "file_name -> "+fileName);
+                        Log.d(TAG, "date_time -> "+dateTime);
+                        Log.d(TAG, "size -> "+size);
+
+                        mStationViewModel.insertStation(new Station(fileName, dateTime, Long.parseLong(size)));
+                    }
                 }
-
-
-
-                // Parse responseStringBuilder.toString() (probably as HTML) here:
 
                 loaderHelper.dismiss();
 
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                loaderHelper.showErrorWithRetry(AppController.getResourses().getString(R.string.txt_something_went_wrong));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 loaderHelper.showErrorWithRetry(AppController.getResourses().getString(R.string.txt_something_went_wrong));
             } finally {

@@ -26,10 +26,10 @@ public class Station {
     @ColumnInfo(name = "data")
     private String data;
 
-    public Station(String dateModified, long size, String fileName) {
+    public Station(@NonNull String fileName, String dateModified, long size) {
+        this.fileName = fileName;
         this.dateModified = dateModified;
         this.size = size;
-        this.fileName = fileName;
     }
 
     public void setData(String data) {
