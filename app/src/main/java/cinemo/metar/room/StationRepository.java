@@ -2,11 +2,16 @@ package cinemo.metar.room;
 
 import android.app.Application;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
+import cinemo.metar.AppController;
+import cinemo.metar.Config;
+import cinemo.metar.R;
+import cinemo.metar.interfaces.FetchDataListener;
+import cinemo.metar.utils.AppUtils;
+import cinemo.metar.utils.HttpUtility;
+import cinemo.metar.utils.StringUtils;
 import cinemo.metar.utils.executors.DefaultExecutorSupplier;
 
 /**
@@ -16,19 +21,13 @@ public class StationRepository {
 
     public static final String TAG = "StationRepository";
 
-    private Application mApplication;
-
     private StationDao mStationDao;
 
-    private LiveData<List<Station>> mStationList;
-
     StationRepository(Application application) {
-        this.mApplication = application;
         StationDatabase database = StationDatabase.getInstance(
                 application.getApplicationContext());
 
         mStationDao = database.stationDao();
-        mStationList = mStationDao.getAllStations();
     }
 
     public void insert(Station station) {
@@ -60,6 +59,54 @@ public class StationRepository {
     public void deleteAll() {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
             mStationDao.deleteAllStations();
+        });
+    }
+
+
+    public void fetchData(FetchDataListener fetchDataListener) {
+
+        if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
+            fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
+            return;
+        }
+
+        DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            try {
+                String requestURL = Config.METAR_DECODED_URL;
+                Log.d(TAG, "calling - "+requestURL);
+                HttpUtility.sendGetRequest(requestURL);
+                String[] response = HttpUtility.readMultipleLinesRespone();
+
+                /**
+                 * parsing HTML to insert in station table
+                 */
+                for (String line : response)  {
+                    if(line.startsWith("<tr><td>") && line.endsWith("</td></tr>")) {
+                        String[] tdArr = line.split("</td>");
+
+                        String fileName = StringUtils.getAnchorTagText(tdArr[0]);
+                        if(!(fileName.contains(".TXT") || fileName.contains(".txt"))) {
+                            continue;
+                        }
+                        String dateTime = StringUtils.removeHtmlTags(tdArr[1]);
+                        String size = StringUtils.removeHtmlTags(tdArr[2]);
+                        Log.d(TAG, "file_name -> "+fileName);
+                        Log.d(TAG, "date_time -> "+dateTime);
+                        Log.d(TAG, "size -> "+size);
+
+                        InsertUpdated(new Station(fileName, dateTime, Long.parseLong(size)));
+                    }
+                }
+
+                fetchDataListener.onSuccess(getAllStations().getValue());
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
+            } finally {
+                HttpUtility.disconnect();
+            }
         });
     }
 

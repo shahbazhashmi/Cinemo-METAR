@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import cinemo.metar.interfaces.FetchDataListener;
+
 /**
  * Created by Shahbaz Hashmi on 2020-01-29.
  */
@@ -38,6 +40,10 @@ public class StationViewModel extends AndroidViewModel {
 
     public void deleteAllStations() {
         mStationRepository.deleteAll();
+    }
+
+    public void fetchNewData(FetchDataListener fetchDataListener) {
+        mStationRepository.fetchData(fetchDataListener);
     }
 
 
