@@ -65,17 +65,26 @@ public class StationRepository {
 
     public void fetchListData(FetchListDataListener fetchDataListener) {
 
-        if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
-            fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
-            return;
-        }
-
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
             try {
+
+                if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
+                    if(isListDataExist()) {
+                        fetchDataListener.onSuccess(getAllStations().getValue());
+                    } else {
+                        fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
+                    }
+                    return;
+                }
+
                 String requestURL = Config.METAR_DECODED_URL;
                 Log.d(TAG, "calling - "+requestURL);
                 HttpUtility.sendGetRequest(requestURL);
                 String[] response = HttpUtility.readMultipleLinesRespone();
+
+                if(response == null || response.length == 0) {
+                    throw new NullPointerException("data not found");
+                }
 
                 /**
                  * parsing HTML to insert in station table
@@ -86,6 +95,9 @@ public class StationRepository {
 
                         String fileName = StringUtils.getAnchorTagText(tdArr[0]);
                         if(!(fileName.contains(".TXT") || fileName.contains(".txt"))) {
+                            continue;
+                        }
+                        if(Config.ONLY_GERMANY_AIRPORTS && !fileName.startsWith(Config.GERMANY_AIRPORT_CODE)) {
                             continue;
                         }
                         String dateTime = StringUtils.removeHtmlTags(tdArr[1]);
@@ -103,11 +115,22 @@ public class StationRepository {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
+                if(isListDataExist()) {
+                    fetchDataListener.onSuccess(getAllStations().getValue());
+                } else {
+                    fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
+                }
             } finally {
                 HttpUtility.disconnect();
             }
         });
     }
+
+    public boolean isListDataExist() {
+        return mStationDao.getCount() > 0;
+    }
+
+
+
 
 }

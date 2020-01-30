@@ -34,8 +34,6 @@ public class MainViewModel extends AndroidViewModel {
 
         loaderHelper.showLoading();
 
-        //todo - check with local data
-
         mStationViewModel.fetchListData(new FetchListDataListener() {
             @Override
             public void onSuccess(List<Station> stationList) {
