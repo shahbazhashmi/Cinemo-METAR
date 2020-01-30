@@ -8,7 +8,7 @@ import java.util.List;
 import cinemo.metar.AppController;
 import cinemo.metar.Config;
 import cinemo.metar.R;
-import cinemo.metar.interfaces.FetchDataListener;
+import cinemo.metar.interfaces.FetchListDataListener;
 import cinemo.metar.utils.AppUtils;
 import cinemo.metar.utils.HttpUtility;
 import cinemo.metar.utils.StringUtils;
@@ -63,7 +63,7 @@ public class StationRepository {
     }
 
 
-    public void fetchData(FetchDataListener fetchDataListener) {
+    public void fetchListData(FetchListDataListener fetchDataListener) {
 
         if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
             fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);

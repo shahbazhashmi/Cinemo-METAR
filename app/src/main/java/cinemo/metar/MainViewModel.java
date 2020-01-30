@@ -1,16 +1,15 @@
 package cinemo.metar;
 
 import android.app.Application;
-import android.util.Log;
+
 import androidx.lifecycle.AndroidViewModel;
 
 import java.util.List;
 
-import cinemo.metar.interfaces.FetchDataListener;
+import cinemo.metar.interfaces.FetchListDataListener;
 import cinemo.metar.loader.LoaderHelper;
 import cinemo.metar.room.Station;
 import cinemo.metar.room.StationViewModel;
-import cinemo.metar.utils.AppUtils;
 
 /**
  * Created by Shahbaz Hashmi on 2020-01-23.
@@ -37,7 +36,7 @@ public class MainViewModel extends AndroidViewModel {
 
         //todo - check with local data
 
-        mStationViewModel.fetchNewData(new FetchDataListener() {
+        mStationViewModel.fetchListData(new FetchListDataListener() {
             @Override
             public void onSuccess(List<Station> stationList) {
                 loaderHelper.dismiss();
