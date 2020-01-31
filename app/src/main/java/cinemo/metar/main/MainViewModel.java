@@ -3,6 +3,11 @@ package cinemo.metar.main;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
+
+import java.util.concurrent.Callable;
+
+import cinemo.metar.AppController;
+import cinemo.metar.R;
 import cinemo.metar.loader.LoaderHelper;
 import cinemo.metar.room.StationViewModel;
 
@@ -21,7 +26,13 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
         loaderHelper = new LoaderHelper();
         stationViewModel = new StationViewModel(application);
-        stationAdapter = new StationAdapter();
+        stationAdapter = new StationAdapter(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                loaderHelper.showError(AppController.getResourses().getString(R.string.txt_search_data_not_found));
+                return null;
+            }
+        });
     }
 
 }

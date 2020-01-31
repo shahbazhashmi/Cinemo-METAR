@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import cinemo.metar.R;
 import cinemo.metar.databinding.RowStationBinding;
@@ -22,13 +23,18 @@ import cinemo.metar.room.Station;
  */
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHolder> implements StationClickListener, Filterable {
 
-    private List<Station> dataModelList = new ArrayList<>();
-    private List<Station> filteredDataModelList = new ArrayList<>();
+    private List<Station> mDataModelList = new ArrayList<>();
+    private List<Station> mFilteredDataModelList = new ArrayList<>();
     private ItemFilter mFilter = new ItemFilter();
+    private Callable<Void> mEmptySearchCallable;
+
+    public StationAdapter(Callable<Void> emptySearchCallable) {
+        mEmptySearchCallable = emptySearchCallable;
+    }
 
     public void setStations(List<Station> dataModelList) {
-        this.dataModelList = dataModelList;
-        this.filteredDataModelList = dataModelList;
+        mDataModelList = dataModelList;
+        mFilteredDataModelList = dataModelList;
         notifyDataSetChanged();
     }
 
@@ -44,7 +50,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Station dataModel = dataModelList.get(position);
+        Station dataModel = mFilteredDataModelList.get(position);
         holder.bind(dataModel);
         holder.itemRowBinding.setItemClickListener(this);
     }
@@ -52,7 +58,15 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return filteredDataModelList.size();
+        return mFilteredDataModelList.size();
+    }
+
+    public Object getItem(int position) {
+        return mFilteredDataModelList.get(position);
+    }
+
+    public long getItemId(int position) {
+        return position;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -89,7 +103,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
 
             FilterResults results = new FilterResults();
 
-            final List<Station> list = dataModelList;
+            final List<Station> list = mDataModelList;
 
             int count = list.size();
             final ArrayList<Station> nlist = new ArrayList<Station>(count);
@@ -112,7 +126,12 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredDataModelList = (ArrayList<Station>) results.values;
+            mFilteredDataModelList = (ArrayList<Station>) results.values;
+            try {
+                if (mFilteredDataModelList.size() == 0) {
+                    mEmptySearchCallable.call();
+                }
+            } catch (Exception e) {e.printStackTrace();}
             notifyDataSetChanged();
         }
     }

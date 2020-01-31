@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
-                //mViewModel.stationAdapter.getFilter().filter(query);
                 return false;
 
             }
@@ -78,10 +78,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(!mViewModel.loaderHelper.isLoading) {
+                    mViewModel.loaderHelper.dismiss();
                     mViewModel.stationAdapter.getFilter().filter(newText);
                 }
                 return false;
             }
+
+
         });
         return super.onCreateOptionsMenu(menu);
     }
