@@ -38,7 +38,7 @@ public interface StationDao {
      * @return
      */
     @Query("SELECT * FROM station WHERE file_name = :fileName AND date_modified = :dateTime AND size = :size")
-    Station getStationByData(String fileName, String dateTime, Long size);
+    Station getStationByData(String fileName, String dateTime, String size);
 
     @Query("SELECT COUNT(file_name) FROM station")
     int getCount();
