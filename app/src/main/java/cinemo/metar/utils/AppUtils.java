@@ -36,15 +36,9 @@ public class AppUtils {
 
             if (TextUtils.isEmpty(message) || context == null)
                 return;
+
             Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                public void run() {
-                    Toast toast = new Toast(context.getApplicationContext());
-                    toast.setText(message);
-                    toast.setDuration(longDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            });
+            handler.post(() -> Toast.makeText(context.getApplicationContext(), message, longDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show());
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (Exception e) {

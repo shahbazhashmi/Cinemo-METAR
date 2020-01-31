@@ -42,8 +42,8 @@ public class StationViewModel extends AndroidViewModel {
         mStationRepository.deleteAll();
     }
 
-    public void fetchListData(FetchListDataListener fetchDataListener) {
-        mStationRepository.fetchListData(fetchDataListener);
+    public void fetchAndGetListData(FetchListDataListener fetchDataListener) {
+        mStationRepository.fetchAndGetListData(fetchDataListener);
     }
 
 

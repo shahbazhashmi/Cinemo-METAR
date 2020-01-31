@@ -18,6 +18,7 @@ import cinemo.metar.R;
 import cinemo.metar.databinding.ActivityMainBinding;
 import cinemo.metar.interfaces.FetchListDataListener;
 import cinemo.metar.room.Station;
+import cinemo.metar.utils.AppUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         mViewModel.loaderHelper.showLoading();
-        mViewModel.stationViewModel.fetchListData(new FetchListDataListener() {
+        mViewModel.stationViewModel.fetchAndGetListData(new FetchListDataListener() {
             @Override
             public void onSuccess(LiveData<List<Station>> stationList) {
                 stationList.observe(MainActivity.this, data -> {
@@ -55,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mViewModel.loaderHelper.showError(errMsg);
                 }
+            }
+
+            @Override
+            public void onUpdatedData(LiveData<List<Station>> stationList) {
+                AppUtils.showToast(MainActivity.this, getString(R.string.txt_new_data_found), true);
+            }
+
+            @Override
+            public void onErrorPrompt(String errMsg) {
+                AppUtils.showToast(MainActivity.this, errMsg, true);
             }
         });
 

@@ -13,6 +13,10 @@ public interface FetchListDataListener {
 
     void onSuccess(LiveData<List<Station>> stationList);
 
+    void onUpdatedData(LiveData<List<Station>> stationList);
+
     void onError(String errMsg, boolean canRetry);
+
+    void onErrorPrompt(String errMsg);
 
 }

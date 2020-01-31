@@ -23,6 +23,8 @@ public class StationRepository {
 
     private StationDao mStationDao;
 
+    private boolean mInsertFlag = false;
+
     StationRepository(Application application) {
         StationDatabase database = StationDatabase.getInstance(
                 application.getApplicationContext());
@@ -40,8 +42,10 @@ public class StationRepository {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
             if(mStationDao.getStationByData(station.getFileName(), station.getDateModified(), station.getSize()) == null) {
                 mStationDao.insertStation(station);
+                mInsertFlag = true;
             } else {
                 Log.d(TAG, "identical record found -> "+station.getFileName());
+                mInsertFlag = false;
             }
         });
     }
@@ -63,21 +67,35 @@ public class StationRepository {
     }
 
 
-    public void fetchListData(FetchListDataListener fetchDataListener) {
+    public void fetchAndGetListData(FetchListDataListener fetchDataListener) {
 
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
             try {
 
+                boolean isDataExist = isListDataExist();
+
+                /**
+                 * if data exist, return to avoid waiting time
+                 */
+                if(isDataExist) {
+                    DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                        fetchDataListener.onSuccess(getAllStations());
+                    });
+                }
+
                 if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
-                    if(isListDataExist()) {
-                        DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onSuccess(getAllStations());
-                        });
+                    if(isDataExist) {
+                        /**
+                         *  just prompt user, as there are already data to show
+                         */
+                        fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_internet_error));
                     } else {
                         fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
                     }
                     return;
                 }
+
+
 
                 String requestURL = Config.METAR_DECODED_URL;
                 Log.d(TAG, "calling - "+requestURL);
@@ -91,6 +109,7 @@ public class StationRepository {
                 /**
                  * parsing HTML to insert in station table
                  */
+                Boolean insertFlag = null;
                 for (String line : response)  {
                     if(line.startsWith("<tr><td>") && line.endsWith("</td></tr>")) {
                         String[] tdArr = line.split("</td>");
@@ -109,19 +128,42 @@ public class StationRepository {
                         Log.d(TAG, "size -> "+size);
 
                         InsertUpdated(new Station(fileName, dateTime, Long.parseLong(size)));
+
+                        /**
+                         * mark insertFlag true to know even single record is inserted
+                         */
+                        if(insertFlag == null && mInsertFlag) {
+                            insertFlag = true;
+                        }
                     }
                 }
-                DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                    fetchDataListener.onSuccess(getAllStations());
-                });
+
+                if(insertFlag != null && insertFlag) {
+                    if(isDataExist) {
+                        /**
+                         * just notify that new record found as there are data already
+                         */
+                        DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                            fetchDataListener.onUpdatedData(getAllStations());
+                        });
+                    } else {
+                        /**
+                         * return list as there is no data
+                         */
+                        DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
+                            fetchDataListener.onSuccess(getAllStations());
+                        });
+                    }
+                }
 
 
             } catch (Exception e) {
                 e.printStackTrace();
                 if(isListDataExist()) {
-                    DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                        fetchDataListener.onSuccess(getAllStations());
-                    });
+                    /**
+                     *  just prompt user, as there are already data to show
+                     */
+                    fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_something_went_wrong));
                 } else {
                     fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
                 }
