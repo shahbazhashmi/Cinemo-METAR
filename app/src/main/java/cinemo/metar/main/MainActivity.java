@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         mBinding.setVm(mViewModel);
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
+        mViewModel.stationAdapter.setOnStationClickListener(station -> {
+            navigateToStationActivity();
+        });
         loadData();
     }
 
@@ -98,5 +100,9 @@ public class MainActivity extends AppCompatActivity {
 
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void navigateToStationActivity() {
+
     }
 }

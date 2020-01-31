@@ -26,12 +26,9 @@ public class MainViewModel extends AndroidViewModel {
         super(application);
         loaderHelper = new LoaderHelper();
         stationViewModel = new StationViewModel(application);
-        stationAdapter = new StationAdapter(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                loaderHelper.showError(AppController.getResourses().getString(R.string.txt_search_data_not_found));
-                return null;
-            }
+        stationAdapter = new StationAdapter(() -> {
+            loaderHelper.showError(AppController.getResourses().getString(R.string.txt_search_data_not_found));
+            return null;
         });
     }
 

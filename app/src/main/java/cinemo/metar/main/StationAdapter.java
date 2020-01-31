@@ -27,6 +27,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
     private List<Station> mFilteredDataModelList = new ArrayList<>();
     private ItemFilter mFilter = new ItemFilter();
     private Callable<Void> mEmptySearchCallable;
+    private StationClickListener mOnStationClickListener;
 
     public StationAdapter(Callable<Void> emptySearchCallable) {
         mEmptySearchCallable = emptySearchCallable;
@@ -36,6 +37,10 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
         mDataModelList = dataModelList;
         mFilteredDataModelList = dataModelList;
         notifyDataSetChanged();
+    }
+
+    public void setOnStationClickListener(StationClickListener onStationClickListener) {
+        mOnStationClickListener = onStationClickListener;
     }
 
     @Override
@@ -86,7 +91,9 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
 
     @Override
     public void onStationClick(Station station) {
-
+        if(mOnStationClickListener != null) {
+            mOnStationClickListener.onStationClick(station);
+        }
     }
 
     @Override
