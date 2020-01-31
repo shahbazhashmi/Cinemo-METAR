@@ -70,18 +70,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
-             /*   if(list.contains(query)){
-                    adapter.getFilter().filter(query);
-                }else{
-                    Toast.makeText(MainActivity.this, "No Match found",Toast.LENGTH_LONG).show();
-                }*/
+                //mViewModel.stationAdapter.getFilter().filter(query);
                 return false;
 
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //adapter.getFilter().filter(newText);
+                if(!mViewModel.loaderHelper.isLoading) {
+                    mViewModel.stationAdapter.getFilter().filter(newText);
+                }
                 return false;
             }
         });
