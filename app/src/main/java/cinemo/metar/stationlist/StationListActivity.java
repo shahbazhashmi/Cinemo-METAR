@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
@@ -45,10 +44,8 @@ public class StationListActivity extends AppCompatActivity {
         mViewModel.loaderHelper.showLoading();
         mViewModel.stationViewModel.fetchAndGetListData(new FetchListDataListener() {
             @Override
-            public void onSuccess(LiveData<List<Station>> stationList) {
-                stationList.observe(StationListActivity.this, data -> {
-                    mViewModel.stationAdapter.setStations(data);
-                });
+            public void onSuccess(List<Station> stationList) {
+                mViewModel.stationAdapter.setStations(stationList);
                 mViewModel.stationAdapter.notifyDataSetChanged();
                 mViewModel.loaderHelper.dismiss();
             }
@@ -63,12 +60,10 @@ public class StationListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUpdatedData(LiveData<List<Station>> stationList) {
+            public void onUpdatedData(List<Station> stationList) {
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.loaderHelper.showLoading();
-                    stationList.observe(StationListActivity.this, data -> {
-                        mViewModel.stationAdapter.setStations(data);
-                    });
+                    mViewModel.stationAdapter.setStations(stationList);
                     mViewModel.stationAdapter.notifyDataSetChanged();
                     mViewModel.loaderHelper.dismiss();
                 });

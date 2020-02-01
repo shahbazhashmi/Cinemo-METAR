@@ -16,7 +16,7 @@ import java.util.List;
 public interface StationDao {
 
     @Query("SELECT * FROM station")
-    LiveData<List<Station>> getAllStations();
+    List<Station> getAllStations();
 
     @Query("DELETE FROM station")
     void deleteAllStations();

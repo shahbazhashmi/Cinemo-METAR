@@ -23,7 +23,7 @@ public class StationViewModel extends AndroidViewModel {
         mStationRepository = new StationRepository(application);
     }
 
-    public LiveData<List<Station>> getAllStationsList() {
+    public List<Station> getAllStationsList() {
         return mStationRepository.getAllStations();
     }
 

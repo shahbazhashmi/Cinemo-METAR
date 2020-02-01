@@ -11,9 +11,9 @@ import cinemo.metar.room.Station;
  */
 public interface FetchListDataListener {
 
-    void onSuccess(LiveData<List<Station>> stationList);
+    void onSuccess(List<Station> stationList);
 
-    void onUpdatedData(LiveData<List<Station>> stationList);
+    void onUpdatedData(List<Station> stationList);
 
     void onError(String errMsg, boolean canRetry);
 

@@ -27,6 +27,8 @@ public class StationRepository {
 
     private StationDao mStationDao;
 
+    private List<Station> mStationList;
+
     StationRepository(Application application) {
         StationDatabase database = StationDatabase.getInstance(
                 application.getApplicationContext());
@@ -70,7 +72,7 @@ public class StationRepository {
             }
     }
 
-    public LiveData<List<Station>> getAllStations() {
+    public List<Station> getAllStations() {
         return mStationDao.getAllStations();
     }
 
@@ -96,9 +98,10 @@ public class StationRepository {
                 /**
                  * if data exist, return to avoid waiting time
                  */
+                mStationList = getAllStations();
                 if(isDataExist) {
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                        fetchDataListener.onSuccess(getAllStations());
+                        fetchDataListener.onSuccess(mStationList);
                     });
                     Log.d(TAG, "fetchAndGetListData -> publishing existing data");
                 }
@@ -165,12 +168,13 @@ public class StationRepository {
                 }
 
                 if(insertFlag) {
+                    mStationList = getAllStations();
                     if(isDataExist) {
                         /**
                          * just notify that new record found as there are data already
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onUpdatedData(getAllStations());
+                            fetchDataListener.onUpdatedData(mStationList);
                         });
                         Log.d(TAG, "fetchAndGetListData -> publishing update");
                     } else {
@@ -178,7 +182,7 @@ public class StationRepository {
                          * return new list as there is no data
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onSuccess(getAllStations());
+                            fetchDataListener.onSuccess(mStationList);
                         });
                         Log.d(TAG, "fetchAndGetListData -> publishing new data");
                     }
