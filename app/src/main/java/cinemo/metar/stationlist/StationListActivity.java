@@ -1,4 +1,4 @@
-package cinemo.metar.main;
+package cinemo.metar.stationlist;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -15,24 +15,24 @@ import android.view.MenuItem;
 import java.util.List;
 
 import cinemo.metar.R;
-import cinemo.metar.databinding.ActivityMainBinding;
+import cinemo.metar.databinding.ActivityStationListBinding;
 import cinemo.metar.interfaces.FetchListDataListener;
 import cinemo.metar.room.Station;
 import cinemo.metar.stationdetails.StationDetailsActivity;
 import cinemo.metar.utils.AppUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class StationListActivity extends AppCompatActivity {
 
     public static final String STATION_OBJECT = "station_object";
 
-    private ActivityMainBinding mBinding;
-    private MainViewModel mViewModel;
+    private ActivityStationListBinding mBinding;
+    private StationListViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_station_list);
+        mViewModel = ViewModelProviders.of(this).get(StationListViewModel.class);
         mBinding.setVm(mViewModel);
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.stationViewModel.fetchAndGetListData(new FetchListDataListener() {
             @Override
             public void onSuccess(LiveData<List<Station>> stationList) {
-                stationList.observe(MainActivity.this, data -> {
+                stationList.observe(StationListActivity.this, data -> {
                     mViewModel.stationAdapter.setStations(data);
                 });
                 mViewModel.stationAdapter.notifyDataSetChanged();
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             public void onUpdatedData(LiveData<List<Station>> stationList) {
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.loaderHelper.showLoading();
-                    stationList.observe(MainActivity.this, data -> {
+                    stationList.observe(StationListActivity.this, data -> {
                         mViewModel.stationAdapter.setStations(data);
                     });
                     mViewModel.stationAdapter.notifyDataSetChanged();
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onErrorPrompt(String errMsg) {
-                AppUtils.showToast(MainActivity.this, errMsg, true);
+                AppUtils.showToast(StationListActivity.this, errMsg, true);
             }
         });
     }

@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".stationdetails.StationDetailsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".main.MainActivity"
+        <activity android:name=".stationlist.StationListActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

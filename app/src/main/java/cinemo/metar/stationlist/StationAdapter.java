@@ -1,4 +1,4 @@
-package cinemo.metar.main;
+package cinemo.metar.stationlist;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

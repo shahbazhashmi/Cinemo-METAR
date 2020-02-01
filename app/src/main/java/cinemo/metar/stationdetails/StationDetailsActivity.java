@@ -1,12 +1,7 @@
 package cinemo.metar.stationdetails;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.arch.core.util.Function;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -14,7 +9,7 @@ import android.os.Bundle;
 import cinemo.metar.R;
 import cinemo.metar.databinding.ActivityStationDetailsBinding;
 import cinemo.metar.interfaces.FetchDetailDataListener;
-import cinemo.metar.main.MainActivity;
+import cinemo.metar.stationlist.StationListActivity;
 import cinemo.metar.room.Station;
 import cinemo.metar.utils.AppUtils;
 
@@ -36,7 +31,7 @@ public class StationDetailsActivity extends AppCompatActivity {
 
     private void loadData() {
         mViewModel.loaderHelper.showLoading();
-        mViewModel.stationViewModel.fetchAndGetDetailData((Station) getIntent().getParcelableExtra(MainActivity.STATION_OBJECT), new FetchDetailDataListener() {
+        mViewModel.stationViewModel.fetchAndGetDetailData((Station) getIntent().getParcelableExtra(StationListActivity.STATION_OBJECT), new FetchDetailDataListener() {
             @Override
             public void onSuccess(Station station) {
                 mViewModel.stationLiveData.setValue(station);

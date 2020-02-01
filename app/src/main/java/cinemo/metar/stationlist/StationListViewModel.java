@@ -1,10 +1,8 @@
-package cinemo.metar.main;
+package cinemo.metar.stationlist;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
-
-import java.util.concurrent.Callable;
 
 import cinemo.metar.AppController;
 import cinemo.metar.R;
@@ -14,7 +12,7 @@ import cinemo.metar.room.StationViewModel;
 /**
  * Created by Shahbaz Hashmi on 2020-01-23.
  */
-public class MainViewModel extends AndroidViewModel {
+public class StationListViewModel extends AndroidViewModel {
 
     private static final String TAG = "MainViewModel";
 
@@ -22,7 +20,7 @@ public class MainViewModel extends AndroidViewModel {
     public StationViewModel stationViewModel;
     public StationAdapter stationAdapter;
 
-    public MainViewModel(Application application) {
+    public StationListViewModel(Application application) {
         super(application);
         loaderHelper = new LoaderHelper();
         stationViewModel = new StationViewModel(application);
