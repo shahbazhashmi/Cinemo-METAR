@@ -26,6 +26,7 @@ public class StationRepository {
     private StationDao mStationDao;
 
     private List<Station> mStationList;
+    private Station mStation;
 
     StationRepository(Application application) {
         StationDatabase database = StationDatabase.getInstance(
@@ -216,14 +217,15 @@ public class StationRepository {
             boolean isDataExist = false;
             try {
                 Log.d(TAG, "fetchAndGetDetailData -> **** start ****");
-                isDataExist = !TextUtils.isEmpty(station.getData());
+                mStation =  getStationByFileName(station.getFileName());
+                isDataExist = !TextUtils.isEmpty(mStation.getData());
 
                 /**
                  * if data exist, return to avoid waiting time
                  */
                 if(isDataExist) {
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                        fetchDataListener.onSuccess(station);
+                        fetchDataListener.onSuccess(mStation);
                     });
                     Log.d(TAG, "fetchAndGetDetailData -> publishing existing data");
                 }
@@ -266,9 +268,9 @@ public class StationRepository {
                     stringBuilder.append("\n\n");
                 }
 
-                station.setData(stringBuilder.toString());
+                mStation.setData(stringBuilder.toString());
 
-                boolean isUpdated = updateUpdated(station);
+                boolean isUpdated = updateUpdated(mStation);
 
                 if(isUpdated) {
                     if(isDataExist) {
@@ -276,7 +278,7 @@ public class StationRepository {
                          * just notify that new data found as there are data already
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onUpdatedData(station);
+                            fetchDataListener.onUpdatedData(mStation);
                         });
                         Log.d(TAG, "fetchAndGetDetailData -> publishing update");
                     } else {
@@ -284,7 +286,7 @@ public class StationRepository {
                          * return station as there is no data
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onSuccess(station);
+                            fetchDataListener.onSuccess(mStation);
                         });
                         Log.d(TAG, "fetchAndGetDetailData -> publishing existing data");
                     }
