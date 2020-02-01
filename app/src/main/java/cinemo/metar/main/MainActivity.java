@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,9 +18,12 @@ import cinemo.metar.R;
 import cinemo.metar.databinding.ActivityMainBinding;
 import cinemo.metar.interfaces.FetchListDataListener;
 import cinemo.metar.room.Station;
+import cinemo.metar.stationdetails.StationDetailsActivity;
 import cinemo.metar.utils.AppUtils;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String STATION_OBJECT = "station_object";
 
     private ActivityMainBinding mBinding;
     private MainViewModel mViewModel;
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
         mViewModel.stationAdapter.setOnStationClickListener(station -> {
-            navigateToStationActivity();
+            navigateToStationActivity(station);
         });
         loadData();
     }
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onUpdatedData(LiveData<List<Station>> stationList) {
+                //todo - refresh
                 AppUtils.showToast(MainActivity.this, getString(R.string.txt_new_data_found), true);
             }
 
@@ -70,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 AppUtils.showToast(MainActivity.this, errMsg, true);
             }
         });
-
     }
 
 
@@ -102,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void navigateToStationActivity() {
-
+    private void navigateToStationActivity(Station station) {
+        Intent intent = new Intent(this, StationDetailsActivity.class);
+        intent.putExtra(STATION_OBJECT, station);
+        startActivity(intent);
     }
 }

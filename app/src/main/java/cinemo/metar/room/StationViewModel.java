@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import cinemo.metar.interfaces.FetchDetailDataListener;
 import cinemo.metar.interfaces.FetchListDataListener;
 
 /**
@@ -26,10 +27,6 @@ public class StationViewModel extends AndroidViewModel {
         return mStationRepository.getAllStations();
     }
 
-    public void InsertUpdatedStation(Station station) {
-        mStationRepository.InsertUpdated(station);
-    }
-
     public void insertStation(Station station) {
         mStationRepository.insert(station);
     }
@@ -44,6 +41,10 @@ public class StationViewModel extends AndroidViewModel {
 
     public void fetchAndGetListData(FetchListDataListener fetchDataListener) {
         mStationRepository.fetchAndGetListData(fetchDataListener);
+    }
+
+    public void fetchAndGetDetailData(Station station, FetchDetailDataListener fetchDataListener) {
+        mStationRepository.fetchAndGetDetailData(station, fetchDataListener);
     }
 
 
