@@ -142,7 +142,7 @@ public class HttpUtility {
         }
         reader.close();
 
-        return (String[]) response.toArray(new String[0]);
+        return response.toArray(new String[0]);
     }
 
     /**

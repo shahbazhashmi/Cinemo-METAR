@@ -3,10 +3,7 @@
     <string name="txt_search">Search</string>
     <string name="txt_retry">Retry</string>
     <string name="txt_search_data_not_found">Search data not found</string>
-    <string name="txt_error_data_not_found">Data not found</string>
-    <string name="txt_ok">OK</string>
     <string name="txt_reload">RELOAD</string>
-    <string name="txt_loading">Loading…</string>
     <string name="txt_new_data_found">New data found</string>
     <string name="txt_internet_error">error in Internet connection</string>
     <string name="txt_something_went_wrong">Something went wrong !</string>

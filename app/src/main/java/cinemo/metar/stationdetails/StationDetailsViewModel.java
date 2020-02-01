@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-
 import cinemo.metar.loader.LoaderHelper;
 import cinemo.metar.room.Station;
 import cinemo.metar.room.StationViewModel;

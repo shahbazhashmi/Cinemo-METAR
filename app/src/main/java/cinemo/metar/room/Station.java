@@ -8,8 +8,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
-
 /**
  * Created by Shahbaz Hashmi on 2020-01-28.
  */

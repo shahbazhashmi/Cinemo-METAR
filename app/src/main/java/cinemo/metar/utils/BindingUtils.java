@@ -3,7 +3,6 @@ package cinemo.metar.utils;
 import android.view.View;
 
 import androidx.databinding.BindingAdapter;
-import androidx.databinding.ObservableBoolean;
 
 /**
  * Created by Shahbaz Hashmi on 2020-01-23.

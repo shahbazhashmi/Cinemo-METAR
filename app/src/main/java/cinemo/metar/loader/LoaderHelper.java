@@ -1,7 +1,5 @@
 package cinemo.metar.loader;
 
-import cinemo.metar.AppController;
-import cinemo.metar.R;
 import cinemo.metar.interfaces.LoaderListener;
 
 /**
