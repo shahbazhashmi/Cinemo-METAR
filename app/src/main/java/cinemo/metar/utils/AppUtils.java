@@ -60,4 +60,13 @@ public class AppUtils {
         snackbar.show();
     }
 
+    public static void setSnackBar(View contextView, String snackTitle) {
+        // Make and display Snackbar
+        Snackbar snackbar =
+                Snackbar.make(contextView, snackTitle, Snackbar.LENGTH_SHORT);
+
+        // show the Snackbar
+        snackbar.show();
+    }
+
 }

@@ -5,6 +5,8 @@
     <string name="txt_search_data_not_found">Search data not found</string>
     <string name="txt_reload">RELOAD</string>
     <string name="txt_new_data_found">New data found</string>
+    <string name="txt_internet_connected">Internet connected</string>
+    <string name="txt_internet_disconnected">Internet disconnected</string>
     <string name="txt_internet_error">error in Internet connection</string>
     <string name="txt_something_went_wrong">Something went wrong !</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import cinemo.metar.BaseActivity;
 import cinemo.metar.R;
 import cinemo.metar.databinding.ActivityStationDetailsBinding;
 import cinemo.metar.interfaces.FetchDetailDataListener;
@@ -13,10 +14,20 @@ import cinemo.metar.room.Station;
 import cinemo.metar.stationlist.StationListActivity;
 import cinemo.metar.utils.AppUtils;
 
-public class StationDetailsActivity extends AppCompatActivity {
+public class StationDetailsActivity extends BaseActivity {
 
     private ActivityStationDetailsBinding mBinding;
     private StationDetailsViewModel mViewModel;
+
+    @Override
+    protected void onNetworkChange(boolean isConnected) {
+        if(!mViewModel.loaderHelper.isShowingData()) {
+            AppUtils.setSnackBar(mBinding.parentLt, getString(isConnected ? R.string.txt_internet_connected : R.string.txt_internet_disconnected));
+            if(isConnected) {
+                loadData();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +52,7 @@ public class StationDetailsActivity extends AppCompatActivity {
             @Override
             public void onUpdatedData(Station station) {
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
-                    mViewModel.loaderHelper.showLoading();
                     mViewModel.stationLiveData.setValue(station);
-                    mViewModel.loaderHelper.dismiss();
                 });
             }
 

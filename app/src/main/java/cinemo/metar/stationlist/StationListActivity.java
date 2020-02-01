@@ -6,13 +6,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.List;
 
+import cinemo.metar.BaseActivity;
 import cinemo.metar.R;
 import cinemo.metar.databinding.ActivityStationListBinding;
 import cinemo.metar.interfaces.FetchListDataListener;
@@ -20,12 +20,22 @@ import cinemo.metar.room.Station;
 import cinemo.metar.stationdetails.StationDetailsActivity;
 import cinemo.metar.utils.AppUtils;
 
-public class StationListActivity extends AppCompatActivity {
+public class StationListActivity extends BaseActivity {
 
     public static final String STATION_OBJECT = "station_object";
 
     private ActivityStationListBinding mBinding;
     private StationListViewModel mViewModel;
+
+    @Override
+    protected void onNetworkChange(boolean isConnected) {
+        if(!mViewModel.loaderHelper.isShowingData()) {
+            AppUtils.setSnackBar(mBinding.parentLt, getString(isConnected ? R.string.txt_internet_connected : R.string.txt_internet_disconnected));
+            if(isConnected) {
+                loadData();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +72,8 @@ public class StationListActivity extends AppCompatActivity {
             @Override
             public void onUpdatedData(List<Station> stationList) {
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
-                    mViewModel.loaderHelper.showLoading();
                     mViewModel.stationAdapter.setStations(stationList);
                     mViewModel.stationAdapter.notifyDataSetChanged();
-                    mViewModel.loaderHelper.dismiss();
                 });
             }
 
@@ -93,7 +101,7 @@ public class StationListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(!mViewModel.loaderHelper.isLoading) {
+                if(!mViewModel.loaderHelper.isLoading()) {
                     mViewModel.loaderHelper.dismiss();
                     mViewModel.stationAdapter.getFilter().filter(newText);
                 }
@@ -110,4 +118,6 @@ public class StationListActivity extends AppCompatActivity {
         intent.putExtra(STATION_OBJECT, station);
         startActivity(intent);
     }
+
+
 }

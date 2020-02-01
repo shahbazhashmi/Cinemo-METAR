@@ -25,7 +25,7 @@ public class StationListViewModel extends AndroidViewModel {
         loaderHelper = new LoaderHelper();
         stationViewModel = new StationViewModel(application);
         stationAdapter = new StationAdapter(() -> {
-            loaderHelper.showError(AppController.getResourses().getString(R.string.txt_search_data_not_found));
+            loaderHelper.showEmptySearch();
             return null;
         });
     }
