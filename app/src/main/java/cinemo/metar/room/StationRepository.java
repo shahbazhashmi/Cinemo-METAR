@@ -86,9 +86,10 @@ public class StationRepository {
     public void fetchAndGetListData(FetchListDataListener fetchDataListener) {
 
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            boolean isDataExist = false;
             try {
                 Log.d(TAG, "fetchAndGetListData -> **** start ****");
-                boolean isDataExist = isListDataExist();
+                isDataExist = isListDataExist();
 
                 /**
                  * if data exist, return to avoid waiting time
@@ -184,7 +185,7 @@ public class StationRepository {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                if(isListDataExist()) {
+                if(isDataExist) {
                     /**
                      *  just prompt user, as there are already data to show
                      */
@@ -208,9 +209,10 @@ public class StationRepository {
 
     public void fetchAndGetDetailData(Station station, FetchDetailDataListener fetchDataListener) {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
+            boolean isDataExist = false;
             try {
                 Log.d(TAG, "fetchAndGetDetailData -> **** start ****");
-                boolean isDataExist = !TextUtils.isEmpty(station.getData());
+                isDataExist = !TextUtils.isEmpty(station.getData());
 
                 /**
                  * if data exist, return to avoid waiting time
@@ -257,7 +259,7 @@ public class StationRepository {
                 StringBuilder stringBuilder = new StringBuilder();
                 for (String line : response)  {
                     stringBuilder.append(line);
-                    stringBuilder.append("\n");
+                    stringBuilder.append("\n\n");
                 }
 
                 station.setData(stringBuilder.toString());
@@ -270,7 +272,7 @@ public class StationRepository {
                          * just notify that new data found as there are data already
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                            fetchDataListener.onUpdatedData(getStationByFileName(station.getFileName()));
+                            fetchDataListener.onUpdatedData(station);
                         });
                         Log.d(TAG, "fetchAndGetDetailData -> publishing update");
                     } else {
@@ -287,7 +289,7 @@ public class StationRepository {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                if(isStationDataExist(station.getFileName())) {
+                if(isDataExist) {
                     /**
                      *  just prompt user, as there are already data to show
                      */
