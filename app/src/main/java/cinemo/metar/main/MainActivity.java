@@ -36,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
         mBinding.setVm(mViewModel);
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
-        mViewModel.stationAdapter.setOnStationClickListener(station -> {
-            navigateToStationActivity(station);
-        });
+        mViewModel.stationAdapter.setOnStationClickListener(this::navigateToStationActivity);
         loadData();
     }
 
@@ -66,8 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onUpdatedData(LiveData<List<Station>> stationList) {
-                //todo - refresh
-                AppUtils.showToast(MainActivity.this, getString(R.string.txt_new_data_found), true);
+                AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
+                    mViewModel.loaderHelper.showLoading();
+                    stationList.observe(MainActivity.this, data -> {
+                        mViewModel.stationAdapter.setStations(data);
+                    });
+                    mViewModel.stationAdapter.notifyDataSetChanged();
+                    mViewModel.loaderHelper.dismiss();
+                });
             }
 
             @Override

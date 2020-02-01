@@ -7,11 +7,12 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import cinemo.metar.AppController;
 import cinemo.metar.R;
 
 /**
@@ -45,6 +46,18 @@ public class AppUtils {
             e.printStackTrace();
         }
 
+    }
+
+
+    public static void setSnackBar(View contextView, String snackTitle, View.OnClickListener listener) {
+        // Make and display Snackbar
+        Snackbar snackbar =
+                Snackbar.make(contextView, snackTitle, Snackbar.LENGTH_SHORT);
+        // Set action with Retry Listener
+        snackbar.setAction(AppController.getResourses().getString(R.string.txt_reload), listener);
+
+        // show the Snackbar
+        snackbar.show();
     }
 
 }

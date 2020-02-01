@@ -45,8 +45,11 @@ public class StationDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onUpdatedData(Station station) {
-                //todo - refresh
-                AppUtils.showToast(StationDetailsActivity.this, getString(R.string.txt_new_data_found), true);
+                AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
+                    mViewModel.loaderHelper.showLoading();
+                    mViewModel.stationLiveData.setValue(station);
+                    mViewModel.loaderHelper.dismiss();
+                });
             }
 
             @Override

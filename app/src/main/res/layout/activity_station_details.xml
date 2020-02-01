@@ -11,7 +11,8 @@
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_lt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".stationdetails.StationDetailsActivity">
@@ -38,7 +39,7 @@
             layout="@layout/layout_loader"
             app:vm="@{vm.loaderHelper.loaderViewModel}" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </layout>
