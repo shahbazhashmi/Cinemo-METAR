@@ -21,7 +21,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/spacing_12"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
