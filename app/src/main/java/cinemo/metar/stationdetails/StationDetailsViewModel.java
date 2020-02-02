@@ -27,6 +27,9 @@ public class StationDetailsViewModel extends AndroidViewModel {
         super(application);
         loaderHelper = new LoaderHelper();
         stationViewModel = new StationViewModel(application);
+        /**
+         * using map to reflect new data when station value gets updated
+         */
         stationData = Transformations.map(stationLiveData, Station::getData);
     }
 }

@@ -41,14 +41,20 @@ public class StationRepository {
         });
     }
 
+    /**
+     * method to insert only new data
+     *
+     * @param station
+     * @return
+     */
     private boolean InsertUpdated(Station station) {
-            if(mStationDao.getStationByData(station.getFileName(), station.getDateModified(), String.valueOf(station.getSize())) == null) {
-                mStationDao.insertStation(station);
-                return true;
-            } else {
-                //Log.d(TAG, "identical record found -> "+station.getFileName());
-                return false;
-            }
+        if (mStationDao.getStationByData(station.getFileName(), station.getDateModified(), String.valueOf(station.getSize())) == null) {
+            mStationDao.insertStation(station);
+            return true;
+        } else {
+            //Log.d(TAG, "identical record found -> "+station.getFileName());
+            return false;
+        }
     }
 
     public void update(Station station) {
@@ -58,7 +64,7 @@ public class StationRepository {
     }
 
     /**
-     * update station if new data found
+     * method ti update only new data
      * @param station
      */
     private boolean updateUpdated(Station station) {
@@ -85,7 +91,11 @@ public class StationRepository {
         return mStationDao.getStationByFileName(fileName);
     }
 
-
+    /**
+     * method provide existing data and also fetches new data
+     *
+     * @param fetchDataListener
+     */
     public void fetchAndGetListData(FetchListDataListener fetchDataListener) {
 
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
@@ -105,7 +115,7 @@ public class StationRepository {
                     Log.d(TAG, "fetchAndGetListData -> publishing existing data");
                 }
 
-                if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
+                if (AppUtils.isNetworkAvailable(AppController.getInstance())) {
                     if(isDataExist) {
                         /**
                          *  just prompt user, as there are already data to show
@@ -116,13 +126,12 @@ public class StationRepository {
                         Log.d(TAG, "fetchAndGetListData -> internet error prompt - publishing existing data");
                     } else {
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                    fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
-                                });
+                            fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
+                        });
                         Log.d(TAG, "fetchAndGetListData -> internet error - showing error");
                     }
                     return;
                 }
-
 
 
                 String requestURL = Config.METAR_DECODED_URL;
@@ -195,13 +204,13 @@ public class StationRepository {
                      *  just prompt user, as there are already data to show
                      */
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_something_went_wrong));
-                            });
+                        fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_something_went_wrong));
+                    });
                     Log.d(TAG, "fetchAndGetListData -> exception - showing error prompt");
                 } else {
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
-                            });
+                        fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
+                    });
                     Log.d(TAG, "fetchAndGetListData -> exception - showing error");
                 }
             } finally {
@@ -212,6 +221,12 @@ public class StationRepository {
     }
 
 
+    /**
+     * method provide existing data and also fetches new data
+     *
+     * @param station
+     * @param fetchDataListener
+     */
     public void fetchAndGetDetailData(Station station, FetchDetailDataListener fetchDataListener) {
         DefaultExecutorSupplier.getInstance().forBackgroundTasks().execute(() -> {
             boolean isDataExist = false;
@@ -230,24 +245,23 @@ public class StationRepository {
                     Log.d(TAG, "fetchAndGetDetailData -> publishing existing data");
                 }
 
-                if(!AppUtils.isNetworkAvailable(AppController.getInstance())) {
+                if (AppUtils.isNetworkAvailable(AppController.getInstance())) {
                     if(isDataExist) {
                         /**
                          *  just prompt user, as there are already data to show
                          */
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                    fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_internet_error));
-                                });
+                            fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_internet_error));
+                        });
                         Log.d(TAG, "fetchAndGetDetailData -> internet error prompt - publishing existing data");
                     } else {
                         DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                    fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
-                                });
+                            fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_internet_error), true);
+                        });
                         Log.d(TAG, "fetchAndGetDetailData -> internet error - showing error");
                     }
                     return;
                 }
-
 
 
                 String requestURL = Config.METAR_DECODED_URL+station.getFileName();
@@ -300,13 +314,13 @@ public class StationRepository {
                      *  just prompt user, as there are already data to show
                      */
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_something_went_wrong));
-                            });
+                        fetchDataListener.onErrorPrompt(AppController.getResourses().getString(R.string.txt_something_went_wrong));
+                    });
                     Log.d(TAG, "fetchAndGetDetailData -> exception - showing error prompt");
                 } else {
                     DefaultExecutorSupplier.getInstance().forMainThreadTasks().execute(() -> {
-                                fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
-                            });
+                        fetchDataListener.onError(AppController.getResourses().getString(R.string.txt_something_went_wrong), true);
+                    });
                     Log.d(TAG, "fetchAndGetDetailData -> exception - showing error");
                 }
             } finally {

@@ -8,7 +8,6 @@
     <string name="txt_station_list">Station List</string>
     <string name="txt_station_data">Station Data</string>
     <string name="txt_internet_connected">Internet connected</string>
-    <string name="txt_internet_disconnected">Internet disconnected</string>
     <string name="txt_internet_error">error in Internet connection</string>
     <string name="txt_something_went_wrong">Something went wrong !</string>
 </resources>

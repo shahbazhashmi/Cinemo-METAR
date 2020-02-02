@@ -1,11 +1,11 @@
 package cinemo.metar;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class BaseActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
@@ -23,14 +23,12 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
 
     @Override
     protected void onPause() {
-        /***/
         unregisterNetworkBroadcastReceiver(this);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        /***/
         registerNetworkBroadcastReceiver(this);
         super.onResume();
     }

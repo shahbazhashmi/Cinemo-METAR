@@ -21,11 +21,11 @@ import cinemo.metar.R;
 public class AppUtils {
 
 
-    public static boolean isNetworkAvailable(Context context) {
+    public static boolean isNetworkAvailable(Context context) throws NullPointerException {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+        return (activeNetworkInfo == null || !activeNetworkInfo.isConnected());
     }
 
 
@@ -49,7 +49,7 @@ public class AppUtils {
     }
 
 
-    public static void setSnackBar(View contextView, String snackTitle, View.OnClickListener listener) {
+    public static void setSnackBarWithReload(View contextView, String snackTitle, View.OnClickListener listener) {
         // Make and display Snackbar
         Snackbar snackbar =
                 Snackbar.make(contextView, snackTitle, Snackbar.LENGTH_SHORT);

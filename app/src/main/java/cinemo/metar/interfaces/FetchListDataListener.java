@@ -1,7 +1,5 @@
 package cinemo.metar.interfaces;
 
-import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
 import cinemo.metar.room.Station;

@@ -9,13 +9,13 @@ import android.content.res.Resources;
 public class AppController extends Application {
 
     private static AppController mInstance;
-    public static Resources res;
+    private static Resources mResources;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        res = getResources();
+        mResources = getResources();
     }
 
     public static synchronized AppController getInstance() {
@@ -23,6 +23,6 @@ public class AppController extends Application {
     }
 
     public static Resources getResourses() {
-        return res;
+        return mResources;
     }
 }

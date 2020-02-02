@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,22 +30,23 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
     private Callable<Void> mEmptySearchCallable;
     private StationClickListener mOnStationClickListener;
 
-    public StationAdapter(Callable<Void> emptySearchCallable) {
+    StationAdapter(Callable<Void> emptySearchCallable) {
         mEmptySearchCallable = emptySearchCallable;
     }
 
-    public void setStations(List<Station> dataModelList) {
+    void setStations(List<Station> dataModelList) {
         mDataModelList = dataModelList;
         mFilteredDataModelList = dataModelList;
         notifyDataSetChanged();
     }
 
-    public void setOnStationClickListener(StationClickListener onStationClickListener) {
+    void setOnStationClickListener(StationClickListener onStationClickListener) {
         mOnStationClickListener = onStationClickListener;
     }
 
+    @NonNull
     @Override
-    public StationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public StationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                         int viewType) {
         RowStationBinding binding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
@@ -74,15 +76,15 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.ViewHold
         return position;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public RowStationBinding itemRowBinding;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        RowStationBinding itemRowBinding;
 
-        public ViewHolder(RowStationBinding itemRowBinding) {
+        ViewHolder(RowStationBinding itemRowBinding) {
             super(itemRowBinding.getRoot());
             this.itemRowBinding = itemRowBinding;
         }
 
-        public void bind(Object obj) {
+        void bind(Object obj) {
             itemRowBinding.setVariable(BR.model, obj);
             itemRowBinding.executePendingBindings();
         }

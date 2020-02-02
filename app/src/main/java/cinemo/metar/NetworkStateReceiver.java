@@ -17,7 +17,7 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 
     protected List<NetworkStateReceiverListener> listeners;
     protected Boolean connected;
-    private String TAG = "NetworkStateReceiver";
+    private static final String TAG = "NetworkStateReceiver";
 
     public NetworkStateReceiver() {
         listeners = new ArrayList<>();

@@ -2,9 +2,8 @@ package cinemo.metar.stationdetails;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import cinemo.metar.BaseActivity;
 import cinemo.metar.R;
@@ -37,7 +36,7 @@ public class StationDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_station_details);
-        mViewModel = ViewModelProviders.of(this).get(StationDetailsViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(StationDetailsViewModel.class);
         mBinding.setVm(mViewModel);
         mBinding.setLifecycleOwner(this);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
@@ -58,7 +57,7 @@ public class StationDetailsActivity extends BaseActivity {
             @Override
             public void onUpdatedData(Station station) {
                 mIsErrorOccurred = false;
-                AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
+                AppUtils.setSnackBarWithReload(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.stationLiveData.setValue(station);
                 });
             }

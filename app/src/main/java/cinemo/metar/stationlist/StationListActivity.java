@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class StationListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_station_list);
-        mViewModel = ViewModelProviders.of(this).get(StationListViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(StationListViewModel.class);
         mBinding.setVm(mViewModel);
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
@@ -79,7 +79,7 @@ public class StationListActivity extends BaseActivity {
             @Override
             public void onUpdatedData(List<Station> stationList) {
                 mIsErrorOccurred = false;
-                AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
+                AppUtils.setSnackBarWithReload(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.stationAdapter.setStations(stationList);
                     mViewModel.stationAdapter.notifyDataSetChanged();
                 });
