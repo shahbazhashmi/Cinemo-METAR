@@ -50,6 +50,7 @@ public class StationListActivity extends BaseActivity {
         mBinding.stationRv.setAdapter(mViewModel.stationAdapter);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
         mViewModel.stationAdapter.setOnStationClickListener(this::navigateToStationActivity);
+        setTitle(getString(R.string.txt_station_list));
         loadData();
     }
 

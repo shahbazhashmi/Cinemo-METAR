@@ -16,9 +16,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".BaseActivity"></activity>
         <activity
+            android:launchMode="singleTop"
             android:name=".stationdetails.StationDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:launchMode="singleTop"
             android:name=".stationlist.StationListActivity"
             android:screenOrientation="portrait">
             <intent-filter>

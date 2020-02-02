@@ -41,6 +41,7 @@ public class StationDetailsActivity extends BaseActivity {
         mBinding.setVm(mViewModel);
         mBinding.setLifecycleOwner(this);
         mViewModel.loaderHelper.setRetryListener(this::loadData);
+        setTitle(getString(R.string.txt_station_data));
         loadData();
     }
 
