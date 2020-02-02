@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".AppController"
@@ -13,7 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".BaseActivity"></activity>
+        <activity
+            android:launchMode="singleTop"
+            android:name=".stationdetails.StationDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:launchMode="singleTop"
+            android:name=".stationlist.StationListActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="cinemo.metar.stationlist.StationListViewModel" />
+    </data>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_lt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".stationlist.StationListActivity">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/station_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <include
+            layout="@layout/layout_loader"
+            app:vm="@{vm.loaderHelper.loaderViewModel}" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</layout>

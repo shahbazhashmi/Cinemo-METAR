@@ -36,7 +36,7 @@ public class LoaderViewModel extends ViewModel {
     }
 
     void dismiss() {
-        isVisible.set(true);
+        isVisible.set(false);
     }
 
     public void onRetryClick(View view) {
