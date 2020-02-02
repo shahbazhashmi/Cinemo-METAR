@@ -19,13 +19,17 @@ public class StationDetailsActivity extends BaseActivity {
     private ActivityStationDetailsBinding mBinding;
     private StationDetailsViewModel mViewModel;
 
+    /**
+     * flag to fetch new data when error occurred
+     * whether it is showing local data
+     */
+    private boolean mIsErrorOccurred = false;
+
     @Override
     protected void onNetworkChange(boolean isConnected) {
-        if(!mViewModel.loaderHelper.isShowingData()) {
-            AppUtils.setSnackBar(mBinding.parentLt, getString(isConnected ? R.string.txt_internet_connected : R.string.txt_internet_disconnected));
-            if(isConnected) {
+        if((!mViewModel.loaderHelper.isShowingData() || mIsErrorOccurred) && isConnected) {
+                AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_internet_connected));
                 loadData();
-            }
         }
     }
 
@@ -45,12 +49,14 @@ public class StationDetailsActivity extends BaseActivity {
         mViewModel.stationViewModel.fetchAndGetDetailData(getIntent().getParcelableExtra(StationListActivity.STATION_OBJECT), new FetchDetailDataListener() {
             @Override
             public void onSuccess(Station station) {
+                mIsErrorOccurred = false;
                 mViewModel.stationLiveData.setValue(station);
                 mViewModel.loaderHelper.dismiss();
             }
 
             @Override
             public void onUpdatedData(Station station) {
+                mIsErrorOccurred = false;
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.stationLiveData.setValue(station);
                 });
@@ -58,6 +64,7 @@ public class StationDetailsActivity extends BaseActivity {
 
             @Override
             public void onError(String errMsg, boolean canRetry) {
+                mIsErrorOccurred = true;
                 if(canRetry) {
                     mViewModel.loaderHelper.showErrorWithRetry(errMsg);
                 } else {
@@ -67,6 +74,7 @@ public class StationDetailsActivity extends BaseActivity {
 
             @Override
             public void onErrorPrompt(String errMsg) {
+                mIsErrorOccurred = true;
                 AppUtils.showToast(StationDetailsActivity.this, errMsg, true);
             }
         });

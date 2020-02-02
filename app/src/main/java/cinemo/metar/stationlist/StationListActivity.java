@@ -27,14 +27,18 @@ public class StationListActivity extends BaseActivity {
     private ActivityStationListBinding mBinding;
     private StationListViewModel mViewModel;
 
+    /**
+     * flag to fetch new data when error occurred
+     * whether it is showing local data
+     */
+    private boolean mIsErrorOccurred = false;
+
     @Override
     protected void onNetworkChange(boolean isConnected) {
-        if(!mViewModel.loaderHelper.isShowingData()) {
-            AppUtils.setSnackBar(mBinding.parentLt, getString(isConnected ? R.string.txt_internet_connected : R.string.txt_internet_disconnected));
-            if(isConnected) {
-                loadData();
-            }
-        }
+        if((!mViewModel.loaderHelper.isShowingData() || mIsErrorOccurred) && isConnected) {
+            AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_internet_connected));
+            loadData();
+        } 
     }
 
     @Override
@@ -55,6 +59,7 @@ public class StationListActivity extends BaseActivity {
         mViewModel.stationViewModel.fetchAndGetListData(new FetchListDataListener() {
             @Override
             public void onSuccess(List<Station> stationList) {
+                mIsErrorOccurred = false;
                 mViewModel.stationAdapter.setStations(stationList);
                 mViewModel.stationAdapter.notifyDataSetChanged();
                 mViewModel.loaderHelper.dismiss();
@@ -62,6 +67,7 @@ public class StationListActivity extends BaseActivity {
 
             @Override
             public void onError(String errMsg, boolean canRetry) {
+                mIsErrorOccurred = true;
                 if(canRetry) {
                     mViewModel.loaderHelper.showErrorWithRetry(errMsg);
                 } else {
@@ -71,6 +77,7 @@ public class StationListActivity extends BaseActivity {
 
             @Override
             public void onUpdatedData(List<Station> stationList) {
+                mIsErrorOccurred = false;
                 AppUtils.setSnackBar(mBinding.parentLt, getString(R.string.txt_new_data_found), view -> {
                     mViewModel.stationAdapter.setStations(stationList);
                     mViewModel.stationAdapter.notifyDataSetChanged();
@@ -79,6 +86,7 @@ public class StationListActivity extends BaseActivity {
 
             @Override
             public void onErrorPrompt(String errMsg) {
+                mIsErrorOccurred = true;
                 AppUtils.showToast(StationListActivity.this, errMsg, true);
             }
         });
